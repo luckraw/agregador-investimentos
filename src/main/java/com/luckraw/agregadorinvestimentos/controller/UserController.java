@@ -27,7 +27,7 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<User> getUser(@PathVariable("userId") String userId) {
-        var user = userService.getUser(userId);
+        var user = userService.getUserById(userId);
 
         if (user.isPresent()) {
             return ResponseEntity.ok(user.get());
