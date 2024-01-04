@@ -32,7 +32,7 @@ public class UserService {
         return userSaved.getUserId();
     }
 
-    public Optional<User> getUser(String userId) {
+    public Optional<User> getUserById(String userId) {
         return userRepository.findById(UUID.fromString(userId));
     }
 
