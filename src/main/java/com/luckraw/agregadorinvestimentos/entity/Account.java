@@ -2,6 +2,7 @@ package com.luckraw.agregadorinvestimentos.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -21,6 +22,9 @@ public class Account {
     @OneToOne(mappedBy = "account")
     @PrimaryKeyJoinColumn
     private BillingAddress billingAddress;
+
+    @OneToMany(mappedBy = "account")
+    private List<AccountStock> accountStocks;
 
     public Account() {
 
