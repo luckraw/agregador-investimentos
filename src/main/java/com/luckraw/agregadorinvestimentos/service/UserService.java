@@ -1,12 +1,21 @@
 package com.luckraw.agregadorinvestimentos.service;
 
-import com.luckraw.agregadorinvestimentos.controller.CreateUserDTO;
-import com.luckraw.agregadorinvestimentos.controller.UpdateUserDTO;
+import com.luckraw.agregadorinvestimentos.controller.dto.AccountResponseDTO;
+import com.luckraw.agregadorinvestimentos.controller.dto.CreateAccountDTO;
+import com.luckraw.agregadorinvestimentos.controller.dto.CreateUserDTO;
+import com.luckraw.agregadorinvestimentos.controller.dto.UpdateUserDTO;
+import com.luckraw.agregadorinvestimentos.entity.Account;
+import com.luckraw.agregadorinvestimentos.entity.BillingAddress;
 import com.luckraw.agregadorinvestimentos.entity.User;
+import com.luckraw.agregadorinvestimentos.repository.AccountRepository;
+import com.luckraw.agregadorinvestimentos.repository.BillingAddressRepository;
 import com.luckraw.agregadorinvestimentos.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,8 +25,15 @@ public class UserService {
 
     private UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    private AccountRepository accountRepository;
+
+    private BillingAddressRepository billingAddressRepository;
+
+    public UserService(UserRepository userRepository, AccountRepository accountRepository,
+                       BillingAddressRepository billingAddressRepository) {
         this.userRepository = userRepository;
+        this.accountRepository = accountRepository;
+        this.billingAddressRepository = billingAddressRepository;
     }
 
     public UUID createUser(CreateUserDTO createUserDTO) {
@@ -72,4 +88,40 @@ public class UserService {
         }
     }
 
+    public void createAccount(String userId, CreateAccountDTO createAccountDTO) {
+
+        var user =userRepository.findById(UUID.fromString(userId))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        var account = new Account(
+                UUID.randomUUID(),
+                createAccountDTO.description(),
+                user,
+                null,
+                new ArrayList<>()
+        );
+
+        var accountCreated = accountRepository.save(account);
+
+        var billingAddress = new BillingAddress(
+                accountCreated.getAccountId(),
+                account,
+                createAccountDTO.street(),
+                createAccountDTO.number()
+        );
+
+        billingAddressRepository.save(billingAddress);
+    }
+
+    public List<AccountResponseDTO> listAccounts(String userId) {
+        var user =userRepository.findById(UUID.fromString(userId))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        return user.getAccounts()
+                .stream()
+                .map(account -> new AccountResponseDTO(
+                        account.getAccountId().toString(),
+                        account.getDescription()
+                )).toList();
+    }
 }
