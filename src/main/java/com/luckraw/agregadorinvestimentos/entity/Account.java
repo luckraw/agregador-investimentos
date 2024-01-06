@@ -30,9 +30,12 @@ public class Account {
 
     }
 
-    public Account(UUID accountId, String description) {
+    public Account(UUID accountId, String description, User user, BillingAddress billingAddress, List<AccountStock> accountStocks) {
         this.accountId = accountId;
         this.description = description;
+        this.user = user;
+        this.billingAddress = billingAddress;
+        this.accountStocks = accountStocks;
     }
 
     public UUID getAccountId() {

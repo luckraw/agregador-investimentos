@@ -1,7 +1,7 @@
 package com.luckraw.agregadorinvestimentos.service;
 
-import com.luckraw.agregadorinvestimentos.controller.CreateUserDTO;
-import com.luckraw.agregadorinvestimentos.controller.UpdateUserDTO;
+import com.luckraw.agregadorinvestimentos.controller.dto.CreateUserDTO;
+import com.luckraw.agregadorinvestimentos.controller.dto.UpdateUserDTO;
 import com.luckraw.agregadorinvestimentos.entity.User;
 import com.luckraw.agregadorinvestimentos.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
